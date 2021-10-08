@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">DCAppUI</string>
+    <string name="connect">Connect</string>
+    <string name="connecting">Connecting...</string>
+    <string name="shield_android_tv">SHIELD Android TV</string>
+    <string name="shield">SHIELD</string>
+    <string name="available_devices">Available Devices</string>
+    <string name="wifi_settings">WiFi Settings</string>
+    <string name="supported_devices">Supported Devices</string>
+    <string name="fetching_devices">Fetching Devices...</string>
+    <string name="waiting_for_5_seconds">Waiting for 5 seconds...</string>
+    <string name="cancel">Cancel</string>
+    <string name="sure_to_delete_this_file_from_recent">Sure to delete this file from recent?</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="sort_by">Sort By</string>
+    <string name="name">Name</string>
+    <string name="size">Size</string>
+    <string name="last_modified">Last Modified</string>
+    <string name="filters">Filters</string>
+    <string name="all">All</string>
+    <string name="files_only">Files Only</string>
+    <string name="folders_only">Folders Only</string>
+    <string name="app_id">CC1AD845</string>
+</resources>

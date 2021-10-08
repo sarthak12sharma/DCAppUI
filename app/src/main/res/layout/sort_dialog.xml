@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/yellowBox"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:background="@drawable/group_26"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/sortByText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/sort_by"
+        android:textSize="22dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@id/yellowBox"
+        app:layout_constraintStart_toStartOf="@id/yellowBox"
+        app:layout_constraintTop_toTopOf="@id/yellowBox" />
+
+    <CheckBox
+        android:id="@+id/nameCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/name"
+        android:textSize="16dp"
+        app:layout_constraintStart_toStartOf="@id/yellowBox"
+        app:layout_constraintTop_toBottomOf="@id/sortByText" />
+
+    <CheckBox
+        android:id="@+id/sizeCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:text="@string/size"
+        android:textSize="16dp"
+        app:layout_constraintStart_toStartOf="@id/yellowBox"
+        app:layout_constraintTop_toBottomOf="@id/nameCheckBox" />
+
+    <CheckBox
+        android:id="@+id/lastModifiedCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:text="@string/last_modified"
+        android:textSize="16dp"
+        app:layout_constraintStart_toStartOf="@id/yellowBox"
+        app:layout_constraintTop_toBottomOf="@id/sizeCheckBox" />
+
+    <TextView
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:background="@drawable/group_26"
+        android:gravity="center"
+        android:text="OK"
+        android:id="@+id/sortOkButton"
+        app:layout_constraintBottom_toBottomOf="@id/yellowBox"
+        app:layout_constraintEnd_toEndOf="@id/yellowBox"
+        app:layout_constraintStart_toStartOf="@id/yellowBox"
+        app:layout_constraintTop_toBottomOf="@id/lastModifiedCheckBox" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

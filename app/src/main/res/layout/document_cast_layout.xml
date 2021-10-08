@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/connectedDeviceName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/documentCastHeading"
+        app:layout_constraintEnd_toEndOf="@id/documentCastHeading"
+        app:layout_constraintStart_toEndOf="@+id/searchIcon"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/documentCastHeading" />
+
+
+    <TextView
+        android:id="@+id/documentCastHeading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/yellow"
+        android:paddingStart="60dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text="Document Cast"
+        android:textColor="@color/black"
+        android:textSize="24dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageView
+        android:layout_width="26dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/back_icon"
+        android:scaleType="center"
+        app:layout_constraintBottom_toBottomOf="@id/documentCastHeading"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/documentCastHeading" />
+
+    <ImageView
+        android:id="@+id/searchIcon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/search_icon"
+        app:layout_constraintBottom_toBottomOf="@id/documentCastHeading"
+        app:layout_constraintEnd_toStartOf="@id/castButton"
+        app:layout_constraintTop_toTopOf="@id/documentCastHeading" />
+
+    <ImageView
+        android:id="@+id/castButton"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="12dp"
+        android:textSize="18dp"
+        android:src="@drawable/ic_cast"
+        app:layout_constraintBottom_toBottomOf="@id/documentCastHeading"
+        app:layout_constraintEnd_toEndOf="@id/documentCastHeading"
+        app:layout_constraintTop_toTopOf="@id/documentCastHeading" />
+
+    <TextView
+        android:id="@+id/storagePath"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/platinum"
+        android:padding="4dp"
+        android:paddingStart="40dp"
+        android:text="/storage/"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/documentCastHeading" />
+
+    <ImageView
+        android:id="@+id/fatBackIcon"
+        android:layout_width="36dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="14dp"
+        android:background="@drawable/back_icon_fat"
+        app:layout_constraintEnd_toStartOf="@+id/internalStorageIcon"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/storagePath" />
+
+    <ImageView
+        android:id="@+id/internalStorageIcon"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="14dp"
+        android:background="@drawable/internal_storage_icon"
+        app:layout_constraintEnd_toStartOf="@+id/externalStorageIcon"
+        app:layout_constraintStart_toEndOf="@+id/fatBackIcon"
+        app:layout_constraintTop_toBottomOf="@id/storagePath" />
+
+
+    <ImageView
+        android:id="@+id/externalStorageIcon"
+        android:layout_width="28dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="14dp"
+        android:background="@drawable/external_storage_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/internalStorageIcon"
+        app:layout_constraintTop_toBottomOf="@id/storagePath" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/fatBackIcon"
+        app:layout_constraintStart_toStartOf="@id/fatBackIcon"
+        app:layout_constraintEnd_toEndOf="@id/fatBackIcon"
+        android:text="Back"
+        android:textSize="12dp"
+        android:id="@+id/backText"
+        android:layout_marginTop="8dp"
+        />
+
+    <TextView
+        android:id="@+id/internalStorageText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="57GB/109GB"
+        android:textSize="12dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/backText"
+        app:layout_constraintEnd_toEndOf="@id/internalStorageIcon"
+        app:layout_constraintStart_toStartOf="@id/internalStorageIcon" />
+
+
+    <TextView
+        android:id="@+id/externalStorageText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="57GB/109GB"
+        android:textSize="12dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/internalStorageText"
+        app:layout_constraintEnd_toEndOf="@id/externalStorageIcon"
+        app:layout_constraintStart_toStartOf="@id/externalStorageIcon" />
+
+
+
+
+    <ImageView
+        android:id="@+id/filterIcon"
+        android:layout_width="30dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/filter_icon"
+        app:layout_constraintEnd_toStartOf="@+id/sortIcon"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/filterText" />
+
+    <ImageView
+        android:id="@+id/sortIcon"
+        android:layout_width="28dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="14dp"
+        android:background="@drawable/sort_icon"
+        app:layout_constraintEnd_toStartOf="@+id/refreshIcon"
+        app:layout_constraintStart_toEndOf="@+id/filterIcon"
+        app:layout_constraintBottom_toTopOf="@id/sortText"
+        android:layout_marginBottom="8dp"/>
+
+
+    <ImageView
+        android:id="@+id/refreshIcon"
+        android:layout_width="28dp"
+        android:layout_height="30dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="14dp"
+        android:background="@drawable/refresh_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/sortIcon"
+        app:layout_constraintBottom_toTopOf="@id/refreshText" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/filterIcon"
+        app:layout_constraintEnd_toEndOf="@id/filterIcon"
+        android:text="Filter"
+        android:textSize="12dp"
+        android:id="@+id/filterText"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="12dp"
+        />
+
+    <TextView
+        android:id="@+id/sortText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sort"
+        android:textSize="12dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/filterText"
+        app:layout_constraintEnd_toEndOf="@id/sortIcon"
+        app:layout_constraintStart_toStartOf="@id/sortIcon" />
+
+
+    <TextView
+        android:id="@+id/refreshText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Refresh"
+        android:textSize="12dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/sortText"
+        app:layout_constraintEnd_toEndOf="@id/refreshIcon"
+        app:layout_constraintStart_toStartOf="@id/refreshIcon" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@id/internalStorageText"
+        app:layout_constraintBottom_toTopOf="@id/sortIcon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="12dp"
+        tools:listitem="@layout/storage_files_list"
+        android:paddingTop="12dp"
+        android:background="@color/platinum"
+        android:id="@+id/documentListRV"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

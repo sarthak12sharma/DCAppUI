@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:layout_marginBottom="12dp"
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp"
+    android:background="@drawable/files_background"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <ImageView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/files_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        android:id="@+id/fileIcon"
+        />
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/fileIcon"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text=".android(1)"
+        android:textStyle="bold"
+        android:paddingStart="8dp"
+        android:id="@+id/documentName"
+        />
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@id/fileIcon"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="108GB"
+        android:textSize="10dp"
+        android:paddingStart="8dp"
+        android:id="@+id/documentDetails"
+        app:layout_constraintTop_toBottomOf="@id/documentName"
+        app:layout_constraintBottom_toBottomOf="@id/fileIcon"
+        />
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/ic_cast"
+        android:id="@+id/castFileButton"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

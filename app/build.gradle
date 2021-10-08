@@ -1,0 +1,68 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
+
+android {
+    compileSdk 31
+
+    defaultConfig {
+        applicationId "com.example.dcappui"
+        minSdk 23
+        targetSdk 31
+        versionCode 1
+        versionName "1.0"
+        useLibrary 'org.apache.http.legacy'
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    viewBinding{
+        enabled = true
+    }
+
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+}
+
+dependencies {
+    implementation 'androidx.core:core-ktx:1.6.0'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    implementation 'com.google.android.gms:play-services-cast-framework:20.0.0'
+    implementation files('libs/AmazonFling.jar')
+    implementation files('libs/android/WhisperPlay.jar')
+    implementation files('libs/Java-WebSocket-1.3.7.jar')
+    implementation files('libs/javax.jmdns_3.4.1-patch2.jar')
+
+    implementation 'androidx.mediarouter:mediarouter:1.2.5'
+    implementation 'com.google.android.gms:play-services-cast:20.0.0'
+
+    implementation 'com.googlecode.plist:dd-plist:1.23'
+    implementation 'com.nimbusds:srp6a-android:2.0.2'
+    implementation 'net.i2p.crypto:eddsa:0.2.0'
+    testImplementation 'org.apache.maven:maven-ant-tasks:2.1.3'
+    testImplementation 'org.mockito:mockito-all:1.10.19'
+    testImplementation 'org.powermock:powermock-api-mockito:1.6.2'
+    testImplementation 'xmlunit:xmlunit:1.4'
+    implementation 'com.mopub:libAvid-mopub:3.6.4'
+
+    implementation 'com.facebook.android:audience-network-sdk:6.2.0'
+
+
+}
