@@ -1,7 +1,5 @@
 package com.example.dcappui.adapters
 
-import android.net.Uri
-import android.os.Build
 import android.text.format.DateFormat
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,21 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
-import com.example.cast.core.MediaInfo
-import com.example.cast.service.capability.MediaPlayer
-import com.example.cast.service.command.ServiceCommandError
 import com.example.cast.service.sessions.LaunchSession
 import com.example.dcappui.R
 import com.example.dcappui.models.DocumentModel
-
 import com.google.android.gms.cast.framework.CastContext
-import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.SessionManager
-import com.google.android.material.snackbar.Snackbar
-import java.time.format.DateTimeFormatterBuilder
-import java.util.*
 
 
 class DocumentListAdapter : RecyclerView.Adapter<DocumentListAdapter.DocumentViewHolder>() {
@@ -32,12 +21,11 @@ class DocumentListAdapter : RecyclerView.Adapter<DocumentListAdapter.DocumentVie
     var documents = mutableListOf<DocumentModel>()
     var clickPosition = 0
     lateinit var recyclerViewClickInterface: RecyclerViewClickInterface
-    val castSession: CastSession? = null
     lateinit var sessionManager: SessionManager
 
 
     interface RecyclerViewClickInterface {
-        fun onItemClick(position:Int)
+        fun onItemClick(position:Int,filePath:String,fileMime:String)
     }
 
 
@@ -79,7 +67,8 @@ class DocumentListAdapter : RecyclerView.Adapter<DocumentListAdapter.DocumentVie
 
         holder.name.text = documents[position].name
         holder.details.text = sizeKbString
-
+        holder.filePath.text = documents[position].data
+        holder.fileMime.text = documents[position].mimeType
         val dateString = DateFormat.format("dd/MM/yyyy HH:mm:ss",date)
 
         Log.d(" date mod " , " $dateString")
@@ -97,7 +86,6 @@ class DocumentListAdapter : RecyclerView.Adapter<DocumentListAdapter.DocumentVie
                 MediaLoadRequestData.Builder().setMediaInfo(mediaInfo).build()
             )*/
 
-
     }
 
     override fun getItemCount(): Int {
@@ -108,10 +96,11 @@ class DocumentListAdapter : RecyclerView.Adapter<DocumentListAdapter.DocumentVie
         val name: TextView = view.findViewById(R.id.documentName)
         val details: TextView = view.findViewById(R.id.documentDetails)
         val castImage: ImageView = view.findViewById(R.id.castFileButton)
-
+        val filePath: TextView = view.findViewById(R.id.filePath)
+        val fileMime: TextView = view.findViewById(R.id.fileMime)
         init {
             view.findViewById<ImageView>(R.id.castFileButton).setOnClickListener {
-                listener.onItemClick(adapterPosition)
+                listener.onItemClick(adapterPosition,filePath.text.toString(),fileMime.text.toString())
             }
         }
 

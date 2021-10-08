@@ -7,12 +7,8 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.wifi.WifiManager
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.os.StatFs
 import android.provider.MediaStore
-import android.text.format.DateFormat
 import android.text.format.Formatter
 import android.util.Log
 import android.view.View
@@ -20,36 +16,29 @@ import android.view.Window
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.CheckBox
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.cast.core.MediaInfo
+import com.example.cast.core.SubtitleInfo
 import com.example.cast.device.ConnectableDevice
 import com.example.cast.device.ConnectableDeviceListener
 import com.example.cast.device.DevicePicker
-import com.example.cast.discovery.CapabilityFilter
 import com.example.cast.service.DeviceService
 import com.example.cast.service.capability.MediaPlayer
 import com.example.cast.service.command.ServiceCommandError
 import com.example.cast.service.sessions.LaunchSession
 import com.example.dcappui.R
 import com.example.dcappui.adapters.DocumentListAdapter
+import com.example.dcappui.adapters.FolderListAdapter
 import com.example.dcappui.databinding.DocumentCastLayoutBinding
 import com.example.dcappui.models.DocumentModel
 import com.google.android.material.snackbar.Snackbar
-import com.example.cast.core.SubtitleInfo
-import com.example.dcappui.adapters.FolderListAdapter
 import java.io.File
 import java.net.URLEncoder
-import java.util.*
-import java.util.regex.Pattern
-import kotlin.collections.ArrayList
-import kotlin.collections.LinkedHashSet
-import kotlin.properties.Delegates
 
 
 class CastDocumentActivity : AppCompatActivity() {
 
-    private var devices : ConnectableDevice? = null
+    private var devices: ConnectableDevice? = null
     private lateinit var devicePicker: DevicePicker
 
     lateinit var launchSession: LaunchSession
@@ -62,79 +51,27 @@ class CastDocumentActivity : AppCompatActivity() {
 
     private val folderAdapter = FolderListAdapter()
 
-    lateinit var filterDialog : Dialog
-    lateinit var sortDialog : Dialog
+    lateinit var filterDialog: Dialog
+    lateinit var sortDialog: Dialog
 
-    lateinit var filesArray : ArrayList<DocumentModel>
-    var allFilesBool : Boolean = false
-    var filesOnlyBool : Boolean = false
-    var foldersOnlyBool : Boolean = false
+    var allFilesBool: Boolean = false
+    var filesOnlyBool: Boolean = false
+    var foldersOnlyBool: Boolean = false
 
-    var nameBool : Boolean = false
+    var nameBool: Boolean = false
     var sizeBool: Boolean = false
-    var lastModBool : Boolean = false
+    var lastModBool: Boolean = false
 
-    var folderArray : MutableList<String> = ArrayList()
-
-/*
-
-    private val deviceListener: ConnectableDeviceListener = object : ConnectableDeviceListener {
-        override fun onPairingRequired(
-            device: ConnectableDevice,
-            service: DeviceService,
-            pairingType: PairingType
-        ) {
-            Log.d("2ndScreenAPP", "Connected to " + devices.getIpAddress())
-            when (pairingType) {
-                PairingType.FIRST_SCREEN -> {
-                    Log.d("2ndScreenAPP", "First Screen")
-                    pairingAlertDialog?.show()
-                }
-                PairingType.PIN_CODE, PairingType.MIXED -> {
-                    Log.d("2ndScreenAPP", "Pin Code")
-                    pairingCodeDialog?.show()
-                }
-                PairingType.NONE -> {
-                }
-                else -> {
-                }
-            }
-        }
-
-        override fun onConnectionFailed(device: ConnectableDevice, error: ServiceCommandError) {
-            Log.d("2ndScreenAPP", "onConnectFailed")
-            connectFailed(devices)
-        }
-
-        override fun onDeviceReady(device: ConnectableDevice) {
-            Log.d("2ndScreenAPP", "onPairingSuccess")
-            if (pairingAlertDialog?.isShowing() == true) {
-                pairingAlertDialog!!.dismiss()
-            }
-            if (pairingCodeDialog?.isShowing() == true) {
-                pairingCodeDialog!!.dismiss()
-            }
-            registerSuccess(devices)
-        }
-
-        override fun onDeviceDisconnected(device: ConnectableDevice) {
-            Log.d("2ndScreenAPP", "Device Disconnected")
-
-        }
-
-        override fun onCapabilityUpdated(
-            device: ConnectableDevice,
-            added: List<String>,
-            removed: List<String>
-        ) {
-        }
-    }
-*/
+    var folderArray: MutableList<String> = ArrayList()
+    var folderSpecificFiles: MutableList<DocumentModel> = ArrayList()
 
 
     private val mDeviceListener: ConnectableDeviceListener = object : ConnectableDeviceListener {
 
-        override fun onPairingRequired(device: ConnectableDevice, service: DeviceService, pairingType: DeviceService.PairingType
+        override fun onPairingRequired(
+            device: ConnectableDevice,
+            service: DeviceService,
+            pairingType: DeviceService.PairingType
         ) {
             when (pairingType) {
                 DeviceService.PairingType.FIRST_SCREEN -> pairingAlertDialog?.show()
@@ -148,11 +85,11 @@ class CastDocumentActivity : AppCompatActivity() {
 
 
         override fun onDeviceReady(device: ConnectableDevice) {
-            if(pairingAlertDialog?.isShowing == true){
+            if (pairingAlertDialog?.isShowing == true) {
                 pairingAlertDialog?.dismiss()
             }
             binding.castButton.setImageResource(R.drawable.ic_cast_black)
-            Snackbar.make(view,"Device paired",Snackbar.LENGTH_LONG).show()
+            Snackbar.make(view, "Device paired", Snackbar.LENGTH_LONG).show()
 
         }
 
@@ -178,21 +115,6 @@ class CastDocumentActivity : AppCompatActivity() {
 
     }
 
-/*    private val mLaunchListener: MediaPlayer.LaunchListener = object : MediaPlayer.LaunchListener {
-        override fun onError(error: ServiceCommandError) {
-            Log.d("Connect SDK Sample App", "Could not launch image: $error")
-        }
-
-        override fun onSuccess(`object`: MediaPlayer.MediaLaunchObject) {
-            Log.d("Connect SDK Sample App", "Successfully launched image!")
-            devices?.removeListener(mDeviceListener)
-            devices?.disconnect()
-            devices = null
-        }
-    }*/
-
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -208,30 +130,18 @@ class CastDocumentActivity : AppCompatActivity() {
         setContentView(view)
         val files = loadFolders()
 
-        val folderList = folderArray.toList()
+        for (item in files) {
+            val directoryName = item.bucketName
+            folderArray.add(directoryName)
+        }
 
-        Log.d(" folder List: " , " $folderList ")
+        Log.d(" folder List: ", " $folderArray ")
 
-        folderAdapter.setFoldersList(folderList.distinct())
+        folderAdapter.setFoldersList(folderArray.distinct())
         binding.documentListRV.adapter = folderAdapter
 
-//        DiscoveryManager.init(applicationContext)
-
-//        val imageFilter = CapabilityFilter(MediaPlayer.Display_Image)
-
-/*
-        DiscoveryManager.getInstance().setCapabilityFilters(imageFilter)
-        DiscoveryManager.getInstance().registerDefaultDeviceTypes()
-        DiscoveryManager.getInstance().pairingLevel = DiscoveryManager.PairingLevel.ON
-        DiscoveryManager.getInstance().start()*/
 
         setupPicker()
-
-/*      val fs = StatFs(Environment.getStorageDirectory().path)
-        val bytesAvailable : Long
-        bytesAvailable = fs.blockSizeLong * fs.availableBlocksLong
-        val megAvailable = bytesAvailable / (1024 * 1024 * 1024)
-        binding.internalStorageText.text = megAvailable.toString()*/
 
 
         val freeBytes = File(getExternalFilesDir(null).toString()).freeSpace
@@ -242,19 +152,15 @@ class CastDocumentActivity : AppCompatActivity() {
         val available = availableBytes / (1024 * 1024 * 1024)
 
 
-        binding.internalStorageText.text = free.toString() + " GB" + " / " + available.toString() + " GB"
-
-
+        binding.internalStorageText.text =
+            free.toString() + " GB" + " / " + available.toString() + " GB"
 
 
         val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        val ipAdd : String = Formatter.formatIpAddress(wifiManager.connectionInfo.ipAddress)
+        val ipAdd: String = Formatter.formatIpAddress(wifiManager.connectionInfo.ipAddress)
 
-        Log.d("ip address","ip: $ipAdd")
+        Log.d("ip address", "ip: $ipAdd")
 
-
-       // adapter.setDocumentList(files)
-       // binding.documentListRV.adapter = adapter
 
 
 
@@ -271,20 +177,22 @@ class CastDocumentActivity : AppCompatActivity() {
             val filterOkButton = filterDialog.findViewById<TextView>(R.id.filterOkButton)
 
             when {
-                allFilesBool-> {
+                allFilesBool -> {
                     allCheckBox.isChecked = true
                 }
                 filesOnlyBool -> {
                     filesOnlyCheckbox.isChecked = true
                 }
-                foldersOnlyBool-> {
+                foldersOnlyBool -> {
                     foldersOnlyCheckbox.isChecked = true
                 }
             }
 
             allCheckBox.setOnClickListener {
-               // adapter.setDocumentList(files)
-               // binding.documentListRV.adapter = adapter
+
+                folderAdapter.setFoldersList(folderArray.distinct())
+                Log.d(" all array: ", " $folderArray")
+                binding.documentListRV.adapter = folderAdapter
                 filesOnlyCheckbox.isChecked = false
                 foldersOnlyCheckbox.isChecked = false
                 allFilesBool = true
@@ -293,8 +201,8 @@ class CastDocumentActivity : AppCompatActivity() {
             }
 
             filesOnlyCheckbox.setOnClickListener {
-                //adapter.setDocumentList(files)
-                //binding.documentListRV.adapter = adapter
+                adapter.setDocumentList(files)
+                binding.documentListRV.adapter = adapter
                 allCheckBox.isChecked = false
                 foldersOnlyCheckbox.isChecked = false
                 filesOnlyBool = true
@@ -304,8 +212,9 @@ class CastDocumentActivity : AppCompatActivity() {
 
 
             foldersOnlyCheckbox.setOnClickListener {
-                //adapter.setDocumentList(files)
-                //binding.documentListRV.adapter = adapter
+                folderAdapter.setFoldersList(folderArray.distinct())
+                Log.d(" Folder only array: ", " $folderArray")
+                binding.documentListRV.adapter = folderAdapter
                 filesOnlyCheckbox.isChecked = false
                 allCheckBox.isChecked = false
                 foldersOnlyBool = true
@@ -341,7 +250,7 @@ class CastDocumentActivity : AppCompatActivity() {
             val lastModCheckbox = sortDialog.findViewById<CheckBox>(R.id.lastModifiedCheckBox)
             val okButton = sortDialog.findViewById<TextView>(R.id.sortOkButton)
 
-            when{
+            when {
                 nameBool -> {
                     nameCheckBox.isChecked = true
                 }
@@ -354,12 +263,11 @@ class CastDocumentActivity : AppCompatActivity() {
             }
 
             nameCheckBox?.setOnClickListener {
-                filesArray = ArrayList(files)
-                filesArray.sortBy {
+                folderSpecificFiles.sortBy {
                     it.name
                 }
-             //   adapter.setDocumentList(filesArray)
-              //  binding.documentListRV.adapter = adapter
+                adapter.setDocumentList(folderSpecificFiles)
+                binding.documentListRV.adapter = adapter
                 sizeCheckBox.isChecked = false
                 lastModCheckbox.isChecked = false
 
@@ -370,13 +278,12 @@ class CastDocumentActivity : AppCompatActivity() {
 
 
 
-            sizeCheckBox.setOnClickListener{
-                filesArray = ArrayList(files)
-                filesArray.sortBy {
+            sizeCheckBox.setOnClickListener {
+                folderSpecificFiles.sortBy {
                     it.size
                 }
-            //    adapter.setDocumentList(filesArray)
-              //  binding.documentListRV.adapter = adapter
+                adapter.setDocumentList(folderSpecificFiles)
+                binding.documentListRV.adapter = adapter
 
                 nameCheckBox.isChecked = false
                 lastModCheckbox.isChecked = false
@@ -388,10 +295,11 @@ class CastDocumentActivity : AppCompatActivity() {
 
             lastModCheckbox.setOnClickListener {
 
-                filesArray = ArrayList(files)
-                filesArray.sortBy {
+                folderSpecificFiles.sortBy {
                     it.lastModified
                 }
+                adapter.setDocumentList(folderSpecificFiles)
+                binding.documentListRV.adapter = adapter
 
                 nameCheckBox.isChecked = false
                 sizeCheckBox.isChecked = false
@@ -405,84 +313,82 @@ class CastDocumentActivity : AppCompatActivity() {
                 sortDialog.dismiss()
             }
 
-
         }
 
 
 
-
-
-        adapter.setOnItemClickListener(object : DocumentListAdapter.RecyclerViewClickInterface{
-
-            override fun onItemClick(position: Int) {
-
-
+        adapter.setOnItemClickListener(object : DocumentListAdapter.RecyclerViewClickInterface {
+            override fun onItemClick(position: Int, filePath: String, fileMime: String) {
                 val iconURL = "http://www.connectsdk.com/files/2013/9656/8845/test_image_icon.jpg"
-
-
-                val mimeType: String = files[position].mimeType
-
-                val iconUrl: String = R.drawable.ic_favorites.toString()
-
-                val fileDataPath : String = files[position].data
-
-                val newPath = fileDataPath.substring(1)
-
-                val encodedPath = URLEncoder.encode(newPath,"utf-8")
-
+                Log.d(" click position: ", " $position")
+                Log.d(" file path: ", " $filePath")
+                val newPath = filePath.substring(1)
+                val encodedPath = URLEncoder.encode(newPath, "utf-8")
                 val absolutePath = "http://$ipAdd:9000/$encodedPath"
-
-
-                Log.d(" absolute path ", "$absolutePath ")
-
-                if(mimeType == "image/jpeg" || mimeType == "image/png" ){
-                    displayImage(absolutePath, mimeType, iconURL)
-                }else if (mimeType == "video/mp4"){
-                    playVideo(absolutePath, mimeType, iconURL)
+                Log.d(" absolute path: ", " $absolutePath")
+                if (fileMime == "image/jpeg" || fileMime == "image/png") {
+                    displayImage(absolutePath, fileMime, iconURL)
+                } else if (fileMime == "video/mp4") {
+                    playVideo(absolutePath, fileMime, iconURL)
                 }
-
-
 
             }
 
         })
 
+        folderAdapter.setOnItemClickListener(object : FolderListAdapter.RecyclerViewClickInterface {
+            override fun onItemClick(position: Int, folderName: String) {
+                Log.d(" position:", " $position ")
 
+                for (item in files) {
+                    Log.d(" for loop ", " $item")
+                    if (folderName == item.bucketName) {
+                        folderSpecificFiles.add(item)
+                        Log.d(" name: ", " $folderSpecificFiles")
+
+                    }
+                }
+                adapter.setDocumentList(folderSpecificFiles)
+                binding.documentListRV.adapter = adapter
+            }
+
+        })
 
     }
 
 
-        private fun playVideo(absolutePath:  String, mimeType : String, iconUrl: String) {
-        var shouldLoop : Boolean = true
-        var subtitleInfo : SubtitleInfo.Builder? = null
-        val mediaInfo: MediaInfo? = MediaInfo.Builder(absolutePath,mimeType)
+    private fun playVideo(absolutePath: String, mimeType: String, iconUrl: String) {
+        var shouldLoop: Boolean = true
+        var subtitleInfo: SubtitleInfo.Builder? = null
+        val mediaInfo: MediaInfo? = MediaInfo.Builder(absolutePath, mimeType)
             .setTitle("Video")
             .setDescription("Video description")
             .setIcon(iconUrl)
             .build()
 
         val mediaPlayer: MediaPlayer? = devices?.getCapability(MediaPlayer::class.java)
-        mediaPlayer?.playMedia(mediaInfo,shouldLoop,object : MediaPlayer.LaunchListener{
+        mediaPlayer?.playMedia(mediaInfo, shouldLoop, object : MediaPlayer.LaunchListener {
             override fun onError(error: ServiceCommandError?) {
                 Log.e("Error", "Error playing video", error)
             }
+
             override fun onSuccess(`object`: MediaPlayer.MediaLaunchObject?) {
                 if (`object` != null) {
                     launchSession = `object`.launchSession
                 }
                 Log.d("Media", "Started casting media")
-                Snackbar.make(view,"Started casting media",Snackbar.LENGTH_LONG).show()
+                Snackbar.make(view, "Started casting media", Snackbar.LENGTH_LONG).show()
             }
 
         })
     }
 
-    private fun displayImage(absolutePath:  String, mimeType : String, iconUrl: String) {
+    private fun displayImage(absolutePath: String, mimeType: String, iconUrl: String) {
         val mediaInfo: MediaInfo? = MediaInfo.Builder(absolutePath, mimeType)
-                .setTitle("title")
-                .setDescription("description")
-                .setIcon(iconUrl)
-                .build()
+            .setTitle("title")
+            .setDescription("description")
+            .setIcon(iconUrl)
+            .build()
 
         val mediaPlayer: MediaPlayer? = devices?.getCapability(MediaPlayer::class.java)
         mediaPlayer?.displayImage(
@@ -491,12 +397,13 @@ class CastDocumentActivity : AppCompatActivity() {
                 override fun onError(error: ServiceCommandError?) {
                     Log.e("Error", "Error playing video", error)
                 }
+
                 override fun onSuccess(`object`: MediaPlayer.MediaLaunchObject?) {
                     if (`object` != null) {
                         launchSession = `object`.launchSession
                     }
                     Log.d("Media", "Started casting media")
-                    Snackbar.make(view,"Started casting media",Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(view, "Started casting media", Snackbar.LENGTH_LONG).show()
                 }
             })
     }
@@ -504,13 +411,14 @@ class CastDocumentActivity : AppCompatActivity() {
 
     private fun setupPicker() {
         devicePicker = DevicePicker(this)
-        binding.castButton.setOnClickListener(){
-            val pickerClickListener = OnItemClickListener{arg0, arg1, arg2, arg3 ->
+        binding.castButton.setOnClickListener() {
+            val pickerClickListener = OnItemClickListener { arg0, arg1, arg2, arg3 ->
                 devices = arg0.getItemAtPosition(arg2) as ConnectableDevice
                 devices!!.addListener(mDeviceListener)
                 devices!!.connect()
             }
-            val dialog : AlertDialog = devicePicker.getPickerDialog("Select a device",pickerClickListener)
+            val dialog: AlertDialog =
+                devicePicker.getPickerDialog("Select a device", pickerClickListener)
             dialog.show()
         }
     }
@@ -529,7 +437,6 @@ class CastDocumentActivity : AppCompatActivity() {
 
 /*        var mMediaRouteButton = binding.mediaRouteButton
         CastButtonFactory.setUpMediaRouteButton(this,mMediaRouteButton)*/
-
 
 
 /*    private fun setupPicker() {
@@ -557,7 +464,6 @@ class CastDocumentActivity : AppCompatActivity() {
     }*/
 
 
-
     private fun loadFolders(): List<DocumentModel> {
         val uri = MediaStore.Files.getContentUri("external")
         val projection = arrayOf(
@@ -567,7 +473,8 @@ class CastDocumentActivity : AppCompatActivity() {
             MediaStore.Files.FileColumns.SIZE,
             MediaStore.Files.FileColumns.MIME_TYPE,
             MediaStore.Files.FileColumns.DATA,
-            MediaStore.Files.FileColumns.PARENT,
+            MediaStore.Files.FileColumns.BUCKET_ID,
+            MediaStore.Files.FileColumns.BUCKET_DISPLAY_NAME
         )
 
         val folders = mutableListOf<DocumentModel>()
@@ -580,8 +487,9 @@ class CastDocumentActivity : AppCompatActivity() {
             val sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.SIZE)
             val mimeType = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MIME_TYPE)
             val fileData = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA)
-            val parentName = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.PARENT)
-            //val nameParent = cursor.getColumnName(idColumn)
+            val bucketIdM = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.BUCKET_ID)
+            val bucketName =
+                cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.BUCKET_DISPLAY_NAME)
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idColumn)
                 val name = cursor.getString(nameColumn)
@@ -592,23 +500,27 @@ class CastDocumentActivity : AppCompatActivity() {
                 val contentUri = ContentUris.withAppendedId(
                     uri, id
                 )
-                val parent = cursor.getString(parentName)
+                val bucketId = cursor.getString(bucketIdM)
+                val bucketDisplayName = cursor.getString(bucketName)
                 if (name != null && mime != null) {
                     Log.d("file names", "file:$name")
-                    Log.d("date tag","data: $dateMod")
-                    folders.add(DocumentModel(id, mime, name, dateMod, size, contentUri,data,parent))
-                    val folderName = data
-                    val delim = "/0/"
-                    val folderArr = folderName.split(delim).toTypedArray()
+                    Log.d("date tag", "data: $dateMod")
+                    Log.d(" bucket id: ", " id:$bucketId ")
+                    Log.d(" bucket display name: ", " id:$bucketDisplayName ")
+                    folders.add(
+                        DocumentModel(
+                            id,
+                            mime,
+                            name,
+                            dateMod,
+                            size,
+                            contentUri,
+                            data,
+                            bucketId,
+                            bucketDisplayName
+                        )
+                    )
 
-                    val secondPart = folderArr[1]
-                    val delim2 = "/"
-                    val folderNameArr = secondPart.split(delim2).toTypedArray()
-                    val folderNameLog : String = folderNameArr[0]
-
-                    Log.d(" folder Name split: ", " $folderNameLog ")
-
-                    folderArray.add(folderNameArr[0])
 
                 }
             }
@@ -620,98 +532,4 @@ class CastDocumentActivity : AppCompatActivity() {
 }
 
 
-/*
-        val docString: String = when (DocumentReaderUtil.getMimeType(fileUri, applicationContext)) {
-            "text/plain" -> DocumentReaderUtil.readTxtFromUri(fileUri, applicationContext)
-            "application/pdf" -> DocumentReaderUtil.readPdfFromUri(fileUri, applicationContext)
-            "application/msword" -> DocumentReaderUtil.readWordDocFromUri(
-                fileUri,
-                applicationContext
-            )
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ->
-                DocumentReaderUtil.readWordDocFromUri(fileUri, applicationContext)
-            else -> ""
-        }
-        Log.d("pdf file", docString)
-*/
-
-
-/* if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q){
-            val sm = getSystemService(Context.STORAGE_SERVICE) as StorageManager
-            intent = sm.primaryStorageVolume.createOpenDocumentTreeIntent()
-
-            val startDir = "Documents"
-            var uriRoot = intent.getParcelableExtra<Uri>("android.provider.extra.INITIAL_URI")
-            var scheme = uriRoot.toString()
-            Log.d("Debug","INITIAL_URI scheme: $scheme")
-            scheme = scheme.replace("/root/","/documents/")
-            scheme += "%3A$startDir"
-            uriRoot = Uri.parse(scheme)
-            intent.putExtra("android.provider.extra.INITIAL_URI", uriRoot)
-            Log.d("Debug","uri: $uriRoot")
-
-            startActivityForResult(intent,REQUEST_CODE)
-        selectDocuments()
-
-   }
-
-   private fun selectDocuments() {
-       val uri = MediaStore.Files.getContentUri("external")
-       var selection = MediaStore.getDocumentUri(this,uri)
-
-       var rs = contentResolver.query(uri,null,selection,null,null)
-   }
-
-    private fun selectDocuments() {
-        val browseDocs = Intent(Intent.ACTION_GET_CONTENT)
-        browseDocs.type = "application/documents"
-        browseDocs.addCategory(Intent.CATEGORY_OPENABLE)
-        startActivityForResult(Intent.createChooser(browseDocs,"Select docs"),REQUEST_CODE)
-    }*/
-
-//     val file = File(Environment.getExternalStorageDirectory().absoluteFile,".pdf")
-//     Log.d("root directories",file.toString())
-
-
-//   val fileUri = MediaStore.Files.getContentUri("external")
-
-
-//   val file = File(Environment.getRootDirectory(),".")
-
-//  val uriFile = Uri.fromFile(file)
-
-//val doc : String = DocumentReaderUtil.readPdfFromFile(file, applicationContext)
-
-// Log.d("document string:",doc)
-
-//   getFilePath(this,fileUri)
-
-/* private fun getFilePath(context: Context, uri: Uri?): String? {
-     var cursor: Cursor? = null
-     val projection = arrayOf(MediaStore.Files.FileColumns.DISPLAY_NAME)
-     try {
-         if (uri == null) return null
-        contentResolver.query(uri, projection, null, null,
-             null)?.use { cursor ->
-             val index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME)
-             while (cursor.moveToNext()) {
-                 val name = cursor.getString(index)
-                 if(name!=null){
-                    // Log.d("folders","folder:"+  name)
-                 }
-//                folders.add(FoldersModel(id, name, dateMod, size, contentUri))
-
-             }
-         }
-         *//*if (cursor != null && cursor.moveToFirst()) {
-                val index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME)
-                return cursor.getString(index)
-            }*//*
-
-
-        } finally {
-            cursor?.close()
-        }
-        return null
-    }*/
 

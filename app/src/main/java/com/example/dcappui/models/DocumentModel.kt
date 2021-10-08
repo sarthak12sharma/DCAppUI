@@ -10,7 +10,8 @@ data class DocumentModel(
     val size: Long,
     val contentUri: Uri,
     val data: String,
-    val parent: String
+    val bucketId: String,
+    val bucketName: String
     )
 
 
